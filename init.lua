@@ -1,38 +1,27 @@
 require "assets/iterator"
 require "assets/entities"
 
---[[
-function reg_types()
-    -- 1
-    local b = game.Bitmap("assets/PlanetCute PNG/Plain Block.png")
-	local b2 = game.Bitmap("assets/PlanetCute PNG/Stone Block.png")
-    game.world:getEntityFactory():registerPrototype("1", function()
-        local e = game.SpriteEntity(b, b2)
-        game.timer:schedule(5, function(t)
-            e:onTimer(t)
-        end)
-        return e
-    end)
+TILE_WIDTH = 101
+TILE_HEIGHT = 81
 
-    local b3 = game.Bitmap("assets/PlanetCute PNG/Wood Block.png")
-    local b4 = game.Bitmap("assets/PlanetCute PNG/Stone Block.png")
-    game.world:getEntityFactory():registerPrototype("2", function()
-        local e = game.SpriteEntity(b3, b4)
-        game.timer:schedule(5, function(t)
-            e:onTimer(t)
-        end)
-        return e
-    end)
-end
---]]
-
-W = 101
-H = 81
+D = "dirt"
+G = "grass"
+W = "water"
+S = "stone"
+T = "stone_tall"
+P = "plain"
+B = "brown"
+O = "wood"
 
 tiles = {
-    {"dirt", "dirt", "stone_tall"},
-    {"dirt", "grass", "stone"},
-    {"water", "water", "water"}
+    {W,W,G,D,D,B,B,S,T,T},
+    {W,W,G,G,G,D,D,S,T,T},
+    {D,W,G,G,O,D,D,S,S,T},
+    {D,W,G,G,O,D,D,S,S,S},
+    {D,W,W,G,G,G,D,D,S,S},
+    {D,W,W,G,G,G,D,D,D,S},
+    {D,D,W,W,W,G,G,D,D,D},
+    {S,S,D,D,W,G,G,D,P,D}
 }
 
 function layout_tiles(t)
@@ -40,7 +29,7 @@ function layout_tiles(t)
     for row in list_iter(t) do
         x = 0
         for cell in list_iter(row) do
-            local e = game.world:spawnEntityAt(cell, x * W, y * H)
+            local e = game.world:spawnEntityAt(cell, x * TILE_WIDTH, y * TILE_HEIGHT, y - 1000) -- place the top row at min z-order
             x = x + 1
         end
         y = y + 1
@@ -50,19 +39,28 @@ end
 create_basic_entities()
 layout_tiles(tiles)
 
-player = game.world:spawnEntityAt("boy", 200, 200)
+player = game.world:spawnEntityAt("boy", 200, 200, 1)
+MOVE_AMT = 3
+ACCEL = 1.0
 
+accel = ACCEL
 game.event:addKeyListener(function(keyname, pressed)
     if pressed then
+        accel = accel + 0.5
+	print("amount = " .. (MOVE_AMT * accel))
         if keyname == 'Left' then
-            player:setPos(player.x - 1, player.y)
+            player:setPos(player.x - (MOVE_AMT * accel), player.y)
         elseif keyname == 'Right' then
-            player:setPos(player.x + 1, player.y)
+            player:setPos(player.x + (MOVE_AMT * accel), player.y)
         elseif keyname == 'Up' then
-            player:setPos(player.x, player.y - 1)
+            player:setPos(player.x, player.y - (MOVE_AMT * accel))
         elseif keyname == 'Down' then
-            player:setPos(player.x, player.y + 1)
+            player:setPos(player.x, player.y + (MOVE_AMT * accel))
+        elseif keyname == 'Escape' then
+            game.quit()
         end
+    else
+        accel = ACCEL
     end
 end)
 
@@ -73,6 +71,4 @@ game.event:addKeyListener(function(keycode, pressed)
         print("key " .. keycode .. " released")
     end
 end)
-
--- game.world:spawnEntityAt("test2", 100, 100)
 
