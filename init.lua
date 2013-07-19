@@ -1,5 +1,6 @@
-require "assets/iterator"
+require "assets/utils"
 require "assets/entities"
+require "assets/fonts"
 
 TILE_WIDTH = 101
 TILE_HEIGHT = 81
@@ -27,6 +28,7 @@ tiles = {
     {S,D,D,W,W,G,G,D,D,D,A}
 }
 
+
 function layout_tiles(t)
     y = -1 -- to fill the top layer
     for row in list_iter(t) do
@@ -40,6 +42,7 @@ function layout_tiles(t)
 end
 
 create_basic_entities()
+create_fonts()
 layout_tiles(tiles)
 
 player = game.world:spawnEntityAt("boy", (TILE_WIDTH * 3), (TILE_HEIGHT * 2.75), 1)
@@ -60,3 +63,5 @@ game.event:addKeyListener(function(keyname, pressed)
     end
 end)
 
+local e = cast(game.TextEntity, game.world:spawnEntityAt("oxygen72", 50, 50, 1000))
+e.text = "Hello World"
