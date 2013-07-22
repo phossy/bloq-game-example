@@ -10,7 +10,7 @@ function create_fonts()
         local path = entry[2]
         local pt = entry[3]
         local face = game.Typeface(path, pt)
-        game.world:getEntityFactory():registerPrototype(key, function()
+        game.world.entityFactory:registerPrototype(key, function()
             return game.TextEntity(face)
         end)
     end

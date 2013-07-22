@@ -10,7 +10,8 @@ basic_entities = {
     {"wall_tall", IMG_DIR .. "Wall Block Tall.png"},
     {"water", IMG_DIR .. "Water Block.png"},
     {"wood", IMG_DIR .. "Wood Block.png"},
-    {"boy", IMG_DIR .. "Character Boy.png"}
+    {"boy", IMG_DIR .. "Character Boy.png"},
+    {"gem_blue", IMG_DIR .. "Gem Blue.png"}
 }
 
 function create_basic_entities()
@@ -18,7 +19,7 @@ function create_basic_entities()
         local key = entry[1]
         local path = entry[2]
         local bmp = game.Bitmap(path)
-        game.world:getEntityFactory():registerPrototype(key, function()
+        game.world.entityFactory:registerPrototype(key, function()
             return game.SpriteEntity(bmp)
         end)
     end
