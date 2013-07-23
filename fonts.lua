@@ -9,9 +9,9 @@ function create_fonts()
         local key = entry[1]
         local path = entry[2]
         local pt = entry[3]
-        local face = game.Typeface(path, pt)
+        fonts[key] = game.Typeface(path, pt)
         game.world.entityFactory:registerPrototype(key, function()
-            return game.TextEntity(face)
+            return game.TextEntity(fonts[key])
         end)
     end
 end
